@@ -1,0 +1,204 @@
+{
+    "docs": [
+        {
+            "location": "/",
+            "text": "UpCloud-python-api Documentation\n\n\nThis is the documentation for the newest version of the client. For older versions,\nplease download the correct source from \nhere\n and use \nmkdocs\n to build the documentation.\n\n\nReading this documentation and using UpCloud-python-api requires that you are familiar with \nUpCloud's API v1.2 documentation\n. Additionally, the documentation also assumes that the user refers to the source code, which is well commented and documented with Python's docstrings, for more detailed information.\n\n\nIf you haven't used UpCloud's API before, please see \nGetting Started With UpCloud\u2019s API\n\n\nThe documentation is divided into two parts. Usage describes the basic CRUD functionality for the object representations of Server, Storage and IP-address. The CloudManager describes the API for performing direct API calls.\n\n\nThe code examples use the following:\n\n\nimport upcloud\nfrom upcloud import Storage\nfrom upcloud import Server\nfrom upcloud import ZONE\n\nmanager = upcloud.CloudManager(\nusername\n, \npassword\n)",
+            "title": "Home"
+        },
+        {
+            "location": "/#upcloud-python-api-documentation",
+            "text": "This is the documentation for the newest version of the client. For older versions,\nplease download the correct source from  here  and use  mkdocs  to build the documentation.  Reading this documentation and using UpCloud-python-api requires that you are familiar with  UpCloud's API v1.2 documentation . Additionally, the documentation also assumes that the user refers to the source code, which is well commented and documented with Python's docstrings, for more detailed information.  If you haven't used UpCloud's API before, please see  Getting Started With UpCloud\u2019s API  The documentation is divided into two parts. Usage describes the basic CRUD functionality for the object representations of Server, Storage and IP-address. The CloudManager describes the API for performing direct API calls.  The code examples use the following:  import upcloud\nfrom upcloud import Storage\nfrom upcloud import Server\nfrom upcloud import ZONE\n\nmanager = upcloud.CloudManager( username ,  password )",
+            "title": "UpCloud-python-api Documentation"
+        },
+        {
+            "location": "/Server/",
+            "text": "The examples use the following:\n\n\nimport upcloud\nfrom upcloud import Server\nfrom upcloud import Storage\nfrom upcloud import ZONE\n\nmanager = upcloud.CloudManager(\nusername\n, \npassword\n)\n\n\n\n\nStart / Stop / Restart\n\n\n\nserver.stop()       \nserver.start()\nserver.restart()\n\n# populate the object with updated information from API\nserver.populate()\n\n\n\n\n\nPlease note that the server might not be stopped/started/restarted immediately when the API responds. The \n.populate()\n method updates the object's fields from the API and is thus useful for checking \nserver.state\n.\n\n\nServer states: \n    \nstarted\n,\nstopped\n -- server is shut down or running\n    \nmaintenance\n       -- when shutting down or (re)starting\n    \nerror\n             -- erronous state in UpCloud's backend\n\n\n\n\nList / Get\n\n\nThe CloudManager returns Server instances.\n\n\n\nservers = manager.get_servers()\nserver = manager.get_server(servers[0].uuid)\n\n\n\n\n\nCreate\n\n\nCreation of servers in the API is handled by the CloudManager. It accepts a Server instance, forms the correct POST request and populates the Server instance's fields from the POST response.\n\n\n\nserver = Server(\n            core_number = 1, \n            memory_amount = 512, \n            hostname = \nweb1.example.com\n, \n            zone = ZONE.London, \n            storage_devices = [\n                Storage(os = \nUbuntu 14.04\n, size=10),\n                Storage(size=10, tier=\nhdd\n)\n            ])\n\nmanager.create_server( server )\n\n\n\n\n\nCurrently available Storage operating systems are the following UpCloud public templates:\n\n\n# upcloud/tools.py\n\nOperating Systems:\n    \nCentOS 6.5\n, \nCentOS 7.0\n, \n    \nDebian 7.8\n, \nUbuntu 12.04\n, \nUbuntu 14.04\n, \n    \nWindows 2003\n, \nWindows 2008\n, \nWindows 2012\n\n\n\n\n\n\nPlease refer to the \nAPI documentation\n for the allowed Server attributes.\n\n\nUpdate\n\n\nAttributes\n\n\nUpdating a Server's attributes is done with its \n.save()\n method that does a PUT request. If you want to manage the Server's Storages or IP-addresses, see below.\n\n\n\nserver = manager.get_server( uuid )\nserver.core_number = 4\nserver.memory_amount = 4096\nserver.save()\n\n\n\n\n\nThe following fields of Server instance may be updated, all other fields are read-only. Trying to assign values to other fields leads to an error.  \n\n\nUpdateable attributes: \n    \nboot_order\n, \ncore_number\n, \nfirewall\n, \nhostname\n, \nmemory_amount\n,  \n    \nnic_model\n, \ntitle\n, \ntimezone\n, \nvideo_model\n, \nvnc\n, \nvnc_password\n\n\n\n\n\nPlease refer to the \nAPI documentation\n for the allowed values.\n\n\nStorages\n\n\nA Server's Storages can be attached and detached with \n.add_storage()\n and \n.remove_storage()\n. Both requests issue an API request instantly.\n\n\n\n# attach\nstorage = manager.create_storage( size=100, zone=ZONE.Helsinki )\nserver.add_storage(storage)\n\n# detach\nstorage = server.storage_devices[1]\nserver.remove_storage(storage)\n\n\n\n\n\nIP-addresses\n\n\nA Server's Storages can be attached and detached with \n.add_IP()\n and \n.remove_IP()\n. Both requests issue an API request instantly. Note that the attached IP is allocated randomly as UpCloud's does not (yet) support floating IPs.\n\n\n\n# attach\nIP = server.add_IP()\n\n# detach\nserver.remove_IP(IP)\n\n\n\n\n\nDestroy\n\n\nDestroys the Server instance and its IP-addresses. However, does not destroy the Storages.\n\n\n\nserver.destroy()",
+            "title": "Server"
+        },
+        {
+            "location": "/Server/#start-stop-restart",
+            "text": "server.stop()       \nserver.start()\nserver.restart()\n\n# populate the object with updated information from API\nserver.populate()  Please note that the server might not be stopped/started/restarted immediately when the API responds. The  .populate()  method updates the object's fields from the API and is thus useful for checking  server.state .  Server states: \n     started , stopped  -- server is shut down or running\n     maintenance        -- when shutting down or (re)starting\n     error              -- erronous state in UpCloud's backend",
+            "title": "Start / Stop / Restart"
+        },
+        {
+            "location": "/Server/#list-get",
+            "text": "The CloudManager returns Server instances.  \nservers = manager.get_servers()\nserver = manager.get_server(servers[0].uuid)",
+            "title": "List / Get"
+        },
+        {
+            "location": "/Server/#create",
+            "text": "Creation of servers in the API is handled by the CloudManager. It accepts a Server instance, forms the correct POST request and populates the Server instance's fields from the POST response.  \nserver = Server(\n            core_number = 1, \n            memory_amount = 512, \n            hostname =  web1.example.com , \n            zone = ZONE.London, \n            storage_devices = [\n                Storage(os =  Ubuntu 14.04 , size=10),\n                Storage(size=10, tier= hdd )\n            ])\n\nmanager.create_server( server )  Currently available Storage operating systems are the following UpCloud public templates:  # upcloud/tools.py\n\nOperating Systems:\n     CentOS 6.5 ,  CentOS 7.0 , \n     Debian 7.8 ,  Ubuntu 12.04 ,  Ubuntu 14.04 , \n     Windows 2003 ,  Windows 2008 ,  Windows 2012   Please refer to the  API documentation  for the allowed Server attributes.",
+            "title": "Create"
+        },
+        {
+            "location": "/Server/#update",
+            "text": "Attributes  Updating a Server's attributes is done with its  .save()  method that does a PUT request. If you want to manage the Server's Storages or IP-addresses, see below.  \nserver = manager.get_server( uuid )\nserver.core_number = 4\nserver.memory_amount = 4096\nserver.save()  The following fields of Server instance may be updated, all other fields are read-only. Trying to assign values to other fields leads to an error.    Updateable attributes: \n     boot_order ,  core_number ,  firewall ,  hostname ,  memory_amount ,  \n     nic_model ,  title ,  timezone ,  video_model ,  vnc ,  vnc_password   Please refer to the  API documentation  for the allowed values.  Storages  A Server's Storages can be attached and detached with  .add_storage()  and  .remove_storage() . Both requests issue an API request instantly.  \n# attach\nstorage = manager.create_storage( size=100, zone=ZONE.Helsinki )\nserver.add_storage(storage)\n\n# detach\nstorage = server.storage_devices[1]\nserver.remove_storage(storage)  IP-addresses  A Server's Storages can be attached and detached with  .add_IP()  and  .remove_IP() . Both requests issue an API request instantly. Note that the attached IP is allocated randomly as UpCloud's does not (yet) support floating IPs.  \n# attach\nIP = server.add_IP()\n\n# detach\nserver.remove_IP(IP)",
+            "title": "Update"
+        },
+        {
+            "location": "/Server/#destroy",
+            "text": "Destroys the Server instance and its IP-addresses. However, does not destroy the Storages.  \nserver.destroy()",
+            "title": "Destroy"
+        },
+        {
+            "location": "/Storage/",
+            "text": "The code examples use the following:\n\n\nimport upcloud\nfrom upcloud import Storage\nfrom upcloud import ZONE\n\nmanager = upcloud.CloudManager(\nusername\n, \npassword\n)\n\n\n\n\nAbout\n\n\nStorages are entirely separate from Servers and can be attached/detached from them. Storages can be created, updated and destroyed separately from servers. They can be loaded as CDROMs or disks and they can be cloned to create a new Storage that is a 1:1 clone of another one.\n\n\nTiers\n\n\nUpCloud offers MaxIOPS (Extremely fast 100k IOPS Storage) and HDD storages. Older disks may still be on our SSD but can be moved to MaxIOPS by cloning.\n\n\nTiers:\n    \nmaxiops\n, \nhdd\n, ( \nssd\n )\n\n\n\n\nTemplates\n\n\nPublic templates such as the Ubuntu 14.04 can be cloned by anyone to get a pre-installed server image that is immediately ready to go. A user can also create private templates for themselves out of any storage. Storages can be cloned from templates during server creation.\n\n\nList / Get\n\n\nCloudManager returns Storage instances.\n\n\n\nmanager.get_storages()\nmanager.get_storage(storage.uuid)\n\n\n\n\n\nget_storages()\n accepts one of the following parameters to filter the query:\n\n\nStorages list filters:\n    \nnormal\n (default), \npublic\n, \nprivate\n, \n    \nbackup\n, \ncdrom\n, \ntemplate\n, \nfavorite\n\n\n\n\n\nCreate\n\n\nStorage can be created with the CloudManager's \n.create_storage(size=10, tier=\"maxiops\", title=\"Storage disk\", zone=\"fi-hel1\")\n\n\n\nstorage1 = manager.create_storage(  size=10, \n                                    tier=\nmaxiops\n, \n                                    title=\nmy storage disk\n, \n                                    zone=ZONE.Helsinki )\n\nstorage2 = manager.create_storage(100, zone=ZONE.Helsinki)\n\n\n\n\n\nUpdate\n\n\nOnly the size and title of a storage can be updated. Please note that size can not be reduced and that OS level actions are required to account for the increased size. \n\n\n\nstorage = manager.get_storage(uuid)\nstorage.update(size=100, title=\nnew title\n)\n\n\n\n\n\nDestroy\n\n\nWarning: data loss is permanent.\n\n\n\nstorage.destroy()",
+            "title": "Storage"
+        },
+        {
+            "location": "/Storage/#about",
+            "text": "Storages are entirely separate from Servers and can be attached/detached from them. Storages can be created, updated and destroyed separately from servers. They can be loaded as CDROMs or disks and they can be cloned to create a new Storage that is a 1:1 clone of another one.  Tiers  UpCloud offers MaxIOPS (Extremely fast 100k IOPS Storage) and HDD storages. Older disks may still be on our SSD but can be moved to MaxIOPS by cloning.  Tiers:\n     maxiops ,  hdd , (  ssd  )  Templates  Public templates such as the Ubuntu 14.04 can be cloned by anyone to get a pre-installed server image that is immediately ready to go. A user can also create private templates for themselves out of any storage. Storages can be cloned from templates during server creation.",
+            "title": "About"
+        },
+        {
+            "location": "/Storage/#list-get",
+            "text": "CloudManager returns Storage instances.  \nmanager.get_storages()\nmanager.get_storage(storage.uuid)  get_storages()  accepts one of the following parameters to filter the query:  Storages list filters:\n     normal  (default),  public ,  private , \n     backup ,  cdrom ,  template ,  favorite",
+            "title": "List / Get"
+        },
+        {
+            "location": "/Storage/#create",
+            "text": "Storage can be created with the CloudManager's  .create_storage(size=10, tier=\"maxiops\", title=\"Storage disk\", zone=\"fi-hel1\")  \nstorage1 = manager.create_storage(  size=10, \n                                    tier= maxiops , \n                                    title= my storage disk , \n                                    zone=ZONE.Helsinki )\n\nstorage2 = manager.create_storage(100, zone=ZONE.Helsinki)",
+            "title": "Create"
+        },
+        {
+            "location": "/Storage/#update",
+            "text": "Only the size and title of a storage can be updated. Please note that size can not be reduced and that OS level actions are required to account for the increased size.   \nstorage = manager.get_storage(uuid)\nstorage.update(size=100, title= new title )",
+            "title": "Update"
+        },
+        {
+            "location": "/Storage/#destroy",
+            "text": "Warning: data loss is permanent.  \nstorage.destroy()",
+            "title": "Destroy"
+        },
+        {
+            "location": "/IP-address/",
+            "text": "About\n\n\nAttributes:\n    access      -- \npublic\n or \nprivate\n\n    address     -- the IP address (string)\n    family      -- \nIPv4\n or \nIPv6\n\n    ptr_record  -- the reverse DNS name (string)\n    server      -- the UUID of the server this IP is attached to (string)\n\n\n\n\nThe only updateable attribute is the \nptr_record\n.\n\nptr_record\n and \nserver\n are not present if /server/uuid endpoint was used.\n\n\nList / Get\n\n\nCloudManager returns IP-address objects.\n\n\n\nmanager.get_IPs()\nmanager.get_IP(\n185.20.31.125\n)\n\n\n\n\n\nCreate\n\n\nThe new IP-address must be attached to a server and has a random address.\n\n\n\n# params: server uuid or a Server object and family, for which default is IPv4\nmanager.attach_IP(server_uuid)\nmanager.attach_IP(server_uuid, \nIPv4\n)\nmanager.attach_IP(server_uuid, \nIPv6\n)\nmanager.attach_IP(Server)\nmanager.attach_IP(Server, \nIPv4\n)\nmanager.attach_IP(Server, \nIPv6\n)\n\n\n# or use Server instance\nserver = manager.get_server(uuid)\nserver.add_IP() # default is IPv4\nserver.add_IP(\nIPv4\n)\nserver.add_IP(\nIPv6\n)\n\n\n\n\n\nUpdate\n\n\nAt the moment only the ptr_record (reverse DNS) of an IP can be changed.\n\n\n\nip = manager.get_IP(\n185.20.31.125\n)\nip.ptr_record = \nthe.new.ptr.record\n\nip.save()\n\n\n\n\n\nDestroy\n\n\n\nip = manager.get_IP(\n185.20.31.125\n)\nip.destroy()",
+            "title": "IP-address"
+        },
+        {
+            "location": "/IP-address/#about",
+            "text": "Attributes:\n    access      --  public  or  private \n    address     -- the IP address (string)\n    family      --  IPv4  or  IPv6 \n    ptr_record  -- the reverse DNS name (string)\n    server      -- the UUID of the server this IP is attached to (string)  The only updateable attribute is the  ptr_record . ptr_record  and  server  are not present if /server/uuid endpoint was used.",
+            "title": "About"
+        },
+        {
+            "location": "/IP-address/#list-get",
+            "text": "CloudManager returns IP-address objects.  \nmanager.get_IPs()\nmanager.get_IP( 185.20.31.125 )",
+            "title": "List / Get"
+        },
+        {
+            "location": "/IP-address/#create",
+            "text": "The new IP-address must be attached to a server and has a random address.  \n# params: server uuid or a Server object and family, for which default is IPv4\nmanager.attach_IP(server_uuid)\nmanager.attach_IP(server_uuid,  IPv4 )\nmanager.attach_IP(server_uuid,  IPv6 )\nmanager.attach_IP(Server)\nmanager.attach_IP(Server,  IPv4 )\nmanager.attach_IP(Server,  IPv6 )\n\n\n# or use Server instance\nserver = manager.get_server(uuid)\nserver.add_IP() # default is IPv4\nserver.add_IP( IPv4 )\nserver.add_IP( IPv6 )",
+            "title": "Create"
+        },
+        {
+            "location": "/IP-address/#update",
+            "text": "At the moment only the ptr_record (reverse DNS) of an IP can be changed.  \nip = manager.get_IP( 185.20.31.125 )\nip.ptr_record =  the.new.ptr.record \nip.save()",
+            "title": "Update"
+        },
+        {
+            "location": "/IP-address/#destroy",
+            "text": "ip = manager.get_IP( 185.20.31.125 )\nip.destroy()",
+            "title": "Destroy"
+        },
+        {
+            "location": "/Firewall/",
+            "text": "The code examples use the following:\n\n\nimport upcloud\nfrom upcloud import FirewallRule\n\nmanager = upcloud.CloudManager(\nusername\n, \npassword\n)\n\n\n\n\nAbout\n\n\nFirewall is configured with FirewallRule objects that are specific to each server.\nPlease note that a servers firewall rules are ignored if firewall is turned off\n(see \nServer\n and \nAPI documentation\n).\n\n\nIf a server is removed, its firewall and thus its firewall rules are removed too.\n\n\nPlease refer to the \nAPI documentation\n\nfor more info on the attributes of FirewallRule.\n\n\nList / Get\n\n\nserver = manager.get_servers()[0]\n\n# all firewall rules\nfirewall_rules = server.get_firewall_rules()\n\n\n\n\nCreate\n\n\nserver = manager.get_servers()[0]\n\nrule = server.add_firewall_rule(\n    FirewallRule(\n        position = \n1\n,\n        direction = \nin\n,\n        family = \nIPv4\n,\n        protocol = \ntcp\n,\n        source_address_start = \n192.168.1.1\n,\n        source_address_end = \n192.168.1.255\n,\n        destination_port_start = \n22\n,\n        destination_port_end = \n22\n,\n        action = \naccept\n\n    )\n)\n\n\n\n\nConfigure Firewall\n\n\nServer provides a helper function to add several firewall rules in series.\nPlease note that the function does not know about pre-existing rules\n(UpCloud servers are created without any firewall rules by default).\n\n\nserver = manager.get_servers()[0]\n\nrules = server.configure_firewall(\n    [\n        FirewallRule(\n            position = \n1\n,\n            direction = \nin\n,\n            family = \nIPv4\n,\n            protocol = \ntcp\n,\n            source_address_start = \n192.168.1.1\n,\n            source_address_end = \n192.168.1.255\n,\n            destination_port_start = \n22\n,\n            destination_port_end = \n22\n,\n            action = \naccept\n\n        ),\n        FirewallRule(\n            position = \n2\n,\n            direction = \nin\n,\n            family = \nIPv4\n,\n            protocol = \ntcp\n,\n            source_address_start = \n192.168.1.1\n,\n            source_address_end = \n192.168.1.255\n,\n            destination_port_start = \n21\n,\n            destination_port_end = \n21\n,\n            action = \naccept\n\n        )\n    ]\n)\n\n\n\n\nDestroy\n\n\nserver = manager.get_servers()[0]\nserver.get_firewall_rules()[0].destroy()\n\n\n\n\nDestroying all firewall rules\n\n\nDue to how the API handles positions, the following will NOT work:\n\n\n# does NOT work\nfor rule in server.get_firewall_rules():\n    rule.destroy()\n\n\n\n\nThis is because rules are based on position and the positions are always so\nthat they start from 1 and are increment by one for each consecutive rule.\n\n\nA better approach would be to use CloudManager/FirewallManager directly\n(CloudManager and its mixins provide API functionality to Server, Storage, FirewallRule, etc. objects)\n\n\nfor rule in server.get_firewall_rules():\n    manager.delete_firewall_rule(server.uuid, 1)",
+            "title": "Firewall"
+        },
+        {
+            "location": "/Firewall/#about",
+            "text": "Firewall is configured with FirewallRule objects that are specific to each server.\nPlease note that a servers firewall rules are ignored if firewall is turned off\n(see  Server  and  API documentation ).  If a server is removed, its firewall and thus its firewall rules are removed too.  Please refer to the  API documentation \nfor more info on the attributes of FirewallRule.",
+            "title": "About"
+        },
+        {
+            "location": "/Firewall/#list-get",
+            "text": "server = manager.get_servers()[0]\n\n# all firewall rules\nfirewall_rules = server.get_firewall_rules()",
+            "title": "List / Get"
+        },
+        {
+            "location": "/Firewall/#create",
+            "text": "server = manager.get_servers()[0]\n\nrule = server.add_firewall_rule(\n    FirewallRule(\n        position =  1 ,\n        direction =  in ,\n        family =  IPv4 ,\n        protocol =  tcp ,\n        source_address_start =  192.168.1.1 ,\n        source_address_end =  192.168.1.255 ,\n        destination_port_start =  22 ,\n        destination_port_end =  22 ,\n        action =  accept \n    )\n)  Configure Firewall  Server provides a helper function to add several firewall rules in series.\nPlease note that the function does not know about pre-existing rules\n(UpCloud servers are created without any firewall rules by default).  server = manager.get_servers()[0]\n\nrules = server.configure_firewall(\n    [\n        FirewallRule(\n            position =  1 ,\n            direction =  in ,\n            family =  IPv4 ,\n            protocol =  tcp ,\n            source_address_start =  192.168.1.1 ,\n            source_address_end =  192.168.1.255 ,\n            destination_port_start =  22 ,\n            destination_port_end =  22 ,\n            action =  accept \n        ),\n        FirewallRule(\n            position =  2 ,\n            direction =  in ,\n            family =  IPv4 ,\n            protocol =  tcp ,\n            source_address_start =  192.168.1.1 ,\n            source_address_end =  192.168.1.255 ,\n            destination_port_start =  21 ,\n            destination_port_end =  21 ,\n            action =  accept \n        )\n    ]\n)",
+            "title": "Create"
+        },
+        {
+            "location": "/Firewall/#destroy",
+            "text": "server = manager.get_servers()[0]\nserver.get_firewall_rules()[0].destroy()  Destroying all firewall rules  Due to how the API handles positions, the following will NOT work:  # does NOT work\nfor rule in server.get_firewall_rules():\n    rule.destroy()  This is because rules are based on position and the positions are always so\nthat they start from 1 and are increment by one for each consecutive rule.  A better approach would be to use CloudManager/FirewallManager directly\n(CloudManager and its mixins provide API functionality to Server, Storage, FirewallRule, etc. objects)  for rule in server.get_firewall_rules():\n    manager.delete_firewall_rule(server.uuid, 1)",
+            "title": "Destroy"
+        },
+        {
+            "location": "/CloudManager/",
+            "text": "Account / Authentication\n\n\n\n# create manager and form a token\nmanager = CloudManager(\napi-username\n, \npassword\n)\n\n# test token\nmanager.authenticate() # alias: get_account()\nmanager.get_account()\n\n\n\n\n\nZone\n\n\nZones are already hardcoded as Enums in \nupcloud.ZONE\n. However, they can be queried from the API too.\n\n\n\nmanager.get_zones()\n\n\n\n\n\nTimeZone\n\n\nTimezone can be given as a parameter to a server during creation and update.\n\n\n\nmanager.get_timezones()\n\n\n\n\n\nPricing\n\n\n\nmanager.get_pricing()\n\n\n\n\n\nServer Sizes\n\n\nList the possible server CPU-ram configurations.\n\n\n\nmanager.get_server_sizes",
+            "title": "General Info"
+        },
+        {
+            "location": "/CloudManager/#account-authentication",
+            "text": "# create manager and form a token\nmanager = CloudManager( api-username ,  password )\n\n# test token\nmanager.authenticate() # alias: get_account()\nmanager.get_account()",
+            "title": "Account / Authentication"
+        },
+        {
+            "location": "/CloudManager/#zone",
+            "text": "Zones are already hardcoded as Enums in  upcloud.ZONE . However, they can be queried from the API too.  \nmanager.get_zones()",
+            "title": "Zone"
+        },
+        {
+            "location": "/CloudManager/#timezone",
+            "text": "Timezone can be given as a parameter to a server during creation and update.  \nmanager.get_timezones()",
+            "title": "TimeZone"
+        },
+        {
+            "location": "/CloudManager/#pricing",
+            "text": "manager.get_pricing()",
+            "title": "Pricing"
+        },
+        {
+            "location": "/CloudManager/#server-sizes",
+            "text": "List the possible server CPU-ram configurations.  \nmanager.get_server_sizes",
+            "title": "Server Sizes"
+        },
+        {
+            "location": "/server-mixin/",
+            "text": "About\n\n\nclass ServerManager():\n    \n\n    Functions for managing IP-addresses. Intended to be used as a mixin for CloudManager.\n    \n\n\n\n\n\nServerManager\n is a mixed into \nCloudManager\n and the following methods are available by\n\n\nmanager = CloudManager(\napi-username\n, \npassword\n)\nmanager.method()\n\n\n\n\nMethods\n\n\ndef get_servers(self, populate=False):\n    \n\n    Returns a list of (populated or unpopulated) Server instances. \n    Populate = False (default) =\n 1 API request, returns unpopulated Server instances.\n    Populate = True =\n Does 1 + n API requests (n = # of servers), returns populated Server instances.\n    \n\n\n\n\n\ndef get_server(self, UUID):\n    \n\n    Returns a (populated) Server instance.\n    \n\n\n\n\n\ndef create_server(self, server):\n    \n\n    Creates a server and its storages based on a (locally created) Server object. \n    Populates the given Server instance with the API response.\n\n    Example:\n    server1 = Server( core_number = 1,\n                memory_amount = 512, \n                hostname = \nmy.example.1\n, \n                zone = ZONE.London, \n                storage_devices = [\n                    Storage(os = \nUbuntu 14.04\n, size=10, tier=maxiops, title='The OS drive'),\n                    Storage(size=10),\n                    Storage()\n                title = \nMy Example Server\n\n            ])\n    manager.create_server(server1)\n\n    One storage should contain an OS. Otherwise storage fields are optional.\n    - size defaults to 10,\n    - title defaults to hostname + \n OS disk\n and hostname + \n storage disk id\n (id is a running starting from 1)\n    - tier defaults to maxiops\n    - valid operating systems are: \n        \nCentOS 6.5\n, \nCentOS 7.0\n\n        \nDebian 7.8\n\n        \nUbuntu 12.04\n, \nUbuntu 14.04\n\n        \nWindows 2003\n,\nWindows 2008\n ,\nWindows 2012\n\n\n    \n\n\n\n\n\ndef modify_server(self, UUID, **kwargs):\n    \n\n    modify_server allows updating the server's updateable_fields.\n    Note: Server's IP-addresses and Storages are managed by their own add/remove methods.\n    \n\n\n\n\n\ndef delete_server(self, UUID):\n    \n\n    DELETE '/server/UUID'. Permanently destroys the virtual machine. \n    DOES NOT remove the storage disks.\n\n    Returns an empty object.\n    \n\n\n\n\n\ndef get_server_data(self, UUID):\n    \n\n    Returns '/server/uuid' data in Python dict. \n    Creates object representations of any IP-address and Storage.",
+            "title": "Server Manager"
+        },
+        {
+            "location": "/server-mixin/#about",
+            "text": "class ServerManager():\n     \n    Functions for managing IP-addresses. Intended to be used as a mixin for CloudManager.\n       ServerManager  is a mixed into  CloudManager  and the following methods are available by  manager = CloudManager( api-username ,  password )\nmanager.method()",
+            "title": "About"
+        },
+        {
+            "location": "/server-mixin/#methods",
+            "text": "def get_servers(self, populate=False):\n     \n    Returns a list of (populated or unpopulated) Server instances. \n    Populate = False (default) =  1 API request, returns unpopulated Server instances.\n    Populate = True =  Does 1 + n API requests (n = # of servers), returns populated Server instances.\n       def get_server(self, UUID):\n     \n    Returns a (populated) Server instance.\n       def create_server(self, server):\n     \n    Creates a server and its storages based on a (locally created) Server object. \n    Populates the given Server instance with the API response.\n\n    Example:\n    server1 = Server( core_number = 1,\n                memory_amount = 512, \n                hostname =  my.example.1 , \n                zone = ZONE.London, \n                storage_devices = [\n                    Storage(os =  Ubuntu 14.04 , size=10, tier=maxiops, title='The OS drive'),\n                    Storage(size=10),\n                    Storage()\n                title =  My Example Server \n            ])\n    manager.create_server(server1)\n\n    One storage should contain an OS. Otherwise storage fields are optional.\n    - size defaults to 10,\n    - title defaults to hostname +   OS disk  and hostname +   storage disk id  (id is a running starting from 1)\n    - tier defaults to maxiops\n    - valid operating systems are: \n         CentOS 6.5 ,  CentOS 7.0 \n         Debian 7.8 \n         Ubuntu 12.04 ,  Ubuntu 14.04 \n         Windows 2003 , Windows 2008  , Windows 2012 \n\n       def modify_server(self, UUID, **kwargs):\n     \n    modify_server allows updating the server's updateable_fields.\n    Note: Server's IP-addresses and Storages are managed by their own add/remove methods.\n       def delete_server(self, UUID):\n     \n    DELETE '/server/UUID'. Permanently destroys the virtual machine. \n    DOES NOT remove the storage disks.\n\n    Returns an empty object.\n       def get_server_data(self, UUID):\n     \n    Returns '/server/uuid' data in Python dict. \n    Creates object representations of any IP-address and Storage.",
+            "title": "Methods"
+        },
+        {
+            "location": "/storage-mixin/",
+            "text": "About\n\n\nclass StorageManager():\n    \n\n    Functions for managing Storage disks. Intended to be used as a mixin for CloudManager.\n    \n\n\n\n\n\nStorageManager\n is a mixed into \nCloudManager\n and the following methods are available by\n\n\nmanager = CloudManager(\napi-username\n, \npassword\n)\nmanager.method()\n\n\n\n\nMethods\n\n\ndef get_storages(self, storage_type=\nnormal\n):\n    \n\n    Returns a list of Storage objects from the API.\n    Storage types: public, private, normal, backup, cdrom, template, favorite\n    \n\n\n\n\n\ndef get_storage(self, UUID):\n    \n\n    Returns a Storage object from the API.\n    \n\n\n\n\n\ndef create_storage(self, size=10, tier=\nmaxiops\n, title=\nStorage disk\n, zone=\nfi-hel1\n):\n    \n\n    Create a Storage object. Returns an object based on the API's response.\n    \n\n\n\n\n\ndef modify_storage(self, UUID, size, title):\n    \n\n    Modify a Storage object. Returns an object based on the API's response.\n    \n\n\n\n\n\ndef delete_storage(self, UUID):\n    \n\n    Destroy a Storage object.\n    \n\n\n\n\n\ndef attach_storage(self, server_uuid, storage_uuid, storage_type, address):\n    \n\n    Attach a Storage object to a Server. Return a list of the server's storages.\n    \n\n\n\n\n\ndef detach_storage(self, server_uuid, address):\n    \n\n    Detach a Storage object to a Server. Return a list of the server's storages.",
+            "title": "Storage Manager"
+        },
+        {
+            "location": "/storage-mixin/#about",
+            "text": "class StorageManager():\n     \n    Functions for managing Storage disks. Intended to be used as a mixin for CloudManager.\n       StorageManager  is a mixed into  CloudManager  and the following methods are available by  manager = CloudManager( api-username ,  password )\nmanager.method()",
+            "title": "About"
+        },
+        {
+            "location": "/storage-mixin/#methods",
+            "text": "def get_storages(self, storage_type= normal ):\n     \n    Returns a list of Storage objects from the API.\n    Storage types: public, private, normal, backup, cdrom, template, favorite\n       def get_storage(self, UUID):\n     \n    Returns a Storage object from the API.\n       def create_storage(self, size=10, tier= maxiops , title= Storage disk , zone= fi-hel1 ):\n     \n    Create a Storage object. Returns an object based on the API's response.\n       def modify_storage(self, UUID, size, title):\n     \n    Modify a Storage object. Returns an object based on the API's response.\n       def delete_storage(self, UUID):\n     \n    Destroy a Storage object.\n       def attach_storage(self, server_uuid, storage_uuid, storage_type, address):\n     \n    Attach a Storage object to a Server. Return a list of the server's storages.\n       def detach_storage(self, server_uuid, address):\n     \n    Detach a Storage object to a Server. Return a list of the server's storages.",
+            "title": "Methods"
+        },
+        {
+            "location": "/IP-address-mixin/",
+            "text": "About\n\n\nclass IPManager():\n    \n\n    Functions for managing IP-addresses.\n    Intended to be used as a mixin for CloudManager.\n    \n\n\n\n\n\nIPManager\n is a mixed into \nCloudManager\n and the following methods are available by\n\n\nmanager = CloudManager(\napi-username\n, \npassword\n)\nmanager.method()\n\n\n\n\nMethods\n\n\ndef get_IP(self, address):\n    \n\n    Get an IP_address object with the IP address (string) from the API.\n    e.g manager.get_IP(\n80.69.175.210\n)\n    \n\n\n\n\n\ndef get_IPs(self):\n    \n\n    Get all IP_address objects from the API.\n    \n\n\n\n\n\ndef attach_IP(self, server, family=\nIPv4\n):\n    \n\n    Attach a new (random) IP_address to the given server (object or UUID)\n    \n\n\n\n\n\ndef modify_IP(self, IP_addr, ptr_record):\n    \n\n    Modify an IP address' ptr-record (Reverse DNS).\n    Accepts an IP_address instance (object) or its address (string).\n    \n\n\n\n\n\ndef release_IP(self, IP_addr):\n    \n\n    Destroy an IP_address. Returns an empty object.\n    Accepts an IP_address instance (object) or its address (string).",
+            "title": "IP-address Manager"
+        },
+        {
+            "location": "/IP-address-mixin/#about",
+            "text": "class IPManager():\n     \n    Functions for managing IP-addresses.\n    Intended to be used as a mixin for CloudManager.\n       IPManager  is a mixed into  CloudManager  and the following methods are available by  manager = CloudManager( api-username ,  password )\nmanager.method()",
+            "title": "About"
+        },
+        {
+            "location": "/IP-address-mixin/#methods",
+            "text": "def get_IP(self, address):\n     \n    Get an IP_address object with the IP address (string) from the API.\n    e.g manager.get_IP( 80.69.175.210 )\n       def get_IPs(self):\n     \n    Get all IP_address objects from the API.\n       def attach_IP(self, server, family= IPv4 ):\n     \n    Attach a new (random) IP_address to the given server (object or UUID)\n       def modify_IP(self, IP_addr, ptr_record):\n     \n    Modify an IP address' ptr-record (Reverse DNS).\n    Accepts an IP_address instance (object) or its address (string).\n       def release_IP(self, IP_addr):\n     \n    Destroy an IP_address. Returns an empty object.\n    Accepts an IP_address instance (object) or its address (string).",
+            "title": "Methods"
+        }
+    ]
+}
