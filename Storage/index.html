@@ -16,6 +16,15 @@
   <link rel="stylesheet" href="../css/theme.css" type="text/css" />
   <link rel="stylesheet" href="../css/theme_extra.css" type="text/css" />
   <link rel="stylesheet" href="../css/highlight.css">
+  <link href="../html/css/highlight.css" rel="stylesheet">
+  <link href="../html/css/theme.css" rel="stylesheet">
+  <link href="../html/css/theme_extra.css" rel="stylesheet">
+  <link href="../html/html/css/highlight.css" rel="stylesheet">
+  <link href="../html/html/css/theme.css" rel="stylesheet">
+  <link href="../html/html/css/theme_extra.css" rel="stylesheet">
+  <link href="../html/html/html/css/highlight.css" rel="stylesheet">
+  <link href="../html/html/html/css/theme.css" rel="stylesheet">
+  <link href="../html/html/html/css/theme_extra.css" rel="stylesheet">
 
   
   <script>
@@ -27,6 +36,33 @@
   <script src="../js/modernizr-2.8.3.min.js"></script>
   <script type="text/javascript" src="../js/highlight.pack.js"></script>
   <script src="../js/theme.js"></script> 
+  <script src="../html/html/html/js/highlight.pack.js"></script>
+  <script src="../html/html/html/js/jquery-2.1.1.min.js"></script>
+  <script src="../html/html/html/js/modernizr-2.8.3.min.js"></script>
+  <script src="../html/html/html/js/theme.js"></script>
+  <script src="../html/html/html/mkdocs/js/lunr-0.5.7.min.js"></script>
+  <script src="../html/html/html/mkdocs/js/mustache.min.js"></script>
+  <script src="../html/html/html/mkdocs/js/require.js"></script>
+  <script src="../html/html/html/mkdocs/js/search.js"></script>
+  <script src="../html/html/html/mkdocs/js/text.js"></script>
+  <script src="../html/html/js/highlight.pack.js"></script>
+  <script src="../html/html/js/jquery-2.1.1.min.js"></script>
+  <script src="../html/html/js/modernizr-2.8.3.min.js"></script>
+  <script src="../html/html/js/theme.js"></script>
+  <script src="../html/html/mkdocs/js/lunr-0.5.7.min.js"></script>
+  <script src="../html/html/mkdocs/js/mustache.min.js"></script>
+  <script src="../html/html/mkdocs/js/require.js"></script>
+  <script src="../html/html/mkdocs/js/search.js"></script>
+  <script src="../html/html/mkdocs/js/text.js"></script>
+  <script src="../html/js/highlight.pack.js"></script>
+  <script src="../html/js/jquery-2.1.1.min.js"></script>
+  <script src="../html/js/modernizr-2.8.3.min.js"></script>
+  <script src="../html/js/theme.js"></script>
+  <script src="../html/mkdocs/js/lunr-0.5.7.min.js"></script>
+  <script src="../html/mkdocs/js/mustache.min.js"></script>
+  <script src="../html/mkdocs/js/require.js"></script>
+  <script src="../html/mkdocs/js/search.js"></script>
+  <script src="../html/mkdocs/js/text.js"></script>
 
   
 </head>
@@ -184,11 +220,11 @@
             <div class="section">
               
                 <p>The code examples use the following:</p>
-<pre><code class="python">import upcloud
-from upcloud import Storage
-from upcloud import ZONE
+<pre><code class="python">import upcloud_api
+from upcloud_api import Storage
+from upcloud_api import ZONE
 
-manager = upcloud.CloudManager(&quot;username&quot;, &quot;password&quot;)
+manager = upcloud_api.CloudManager(&quot;username&quot;, &quot;password&quot;)
 </code></pre>
 
 <h1 id="about">About</h1>
@@ -211,16 +247,16 @@ manager.get_storage(storage.uuid)
 
 <p><code>get_storages()</code> accepts one of the following parameters to filter the query:</p>
 <pre><code>Storages list filters:
-    &quot;normal&quot; (default), &quot;public&quot;, &quot;private&quot;, 
+    &quot;normal&quot; (default), &quot;public&quot;, &quot;private&quot;,
     &quot;backup&quot;, &quot;cdrom&quot;, &quot;template&quot;, &quot;favorite&quot;
 </code></pre>
 
 <h2 id="create">Create</h2>
 <p>Storage can be created with the CloudManager's <code>.create_storage(size=10, tier="maxiops", title="Storage disk", zone="fi-hel1")</code></p>
 <pre><code class="python">
-storage1 = manager.create_storage(  size=10, 
-                                    tier=&quot;maxiops&quot;, 
-                                    title=&quot;my storage disk&quot;, 
+storage1 = manager.create_storage(  size=10,
+                                    tier=&quot;maxiops&quot;,
+                                    title=&quot;my storage disk&quot;,
                                     zone=ZONE.Helsinki )
 
 storage2 = manager.create_storage(100, zone=ZONE.Helsinki)
@@ -228,7 +264,7 @@ storage2 = manager.create_storage(100, zone=ZONE.Helsinki)
 </code></pre>
 
 <h2 id="update">Update</h2>
-<p>Only the size and title of a storage can be updated. Please note that size can not be reduced and that OS level actions are required to account for the increased size. </p>
+<p>Only the size and title of a storage can be updated. Please note that size can not be reduced and that OS level actions are required to account for the increased size.</p>
 <pre><code class="python">
 storage = manager.get_storage(uuid)
 storage.update(size=100, title=&quot;new title&quot;)
